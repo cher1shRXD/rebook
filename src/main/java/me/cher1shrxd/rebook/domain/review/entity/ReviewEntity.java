@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.cher1shrxd.rebook.domain.book.entity.BookEntity;
 import me.cher1shrxd.rebook.domain.user.entity.UserEntity;
 
 @Entity
@@ -25,24 +26,29 @@ public class ReviewEntity extends BaseTimeEntity{
     String content;
 
     @Column(nullable = false)
-    Long bookId;
+    Long rating;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id", nullable = false)
+    private BookEntity book;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
     @Builder
-    public ReviewEntity(UserEntity user, String title, String content, Long bookId) {
+    public ReviewEntity(UserEntity user, String title, String content, Long rating, BookEntity book) {
         this.user = user;
         this.title = title;
         this.content = content;
-        this.bookId = bookId;
+        this.rating = rating;
+        this.book = book;
     }
 
-    public void updateReview( String title, String content, Long bookId) {
+    public void updateReview( String title, String content, Long rating) {
         this.title = title;
         this.content = content;
-        this.bookId = bookId;
+        this.rating = rating;
     }
 
 }
