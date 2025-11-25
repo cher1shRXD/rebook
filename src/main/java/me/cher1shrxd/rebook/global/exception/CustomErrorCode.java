@@ -21,8 +21,11 @@ public enum CustomErrorCode {
 
     // Global
     METHOD_ARGUMENT_NOT_SUPPORTED(405, "Method argument not supported"),
-    NO_HANDLER_FOUND(404, "No handler found")
-    ;
+    NO_HANDLER_FOUND(404, "No handler found"),
+
+    // Book
+    BOOK_NOT_FOUND(404, "Book not found"),
+    BOOK_FORBIDDEN(403, "not your book");
 
     private final int status;
     private final String message;
