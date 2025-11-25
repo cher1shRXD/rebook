@@ -1,0 +1,29 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.H2Dialect
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: false
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+application:
+  jwt:
+    expiration: 300000
+    refresh-expiration: 64800000
+    secret-key: testsecretkeyforjwtauthenticationtestsecretkeyforjwtauthentication
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
