@@ -2,21 +2,26 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+    database-platform: org.hibernate.dialect.H2Dialect
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: ${DB_URL}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
+      host: localhost
+      port: 6379
 
 application:
   jwt:
     expiration: 300000 # 5m
     refresh-expiration: 64800000 # 1d
-    secret-key: ${SECRET_KEY}
+    secret-key: ehdgoanfrhkqorentksdlakfmrhekfgehfhrgksmsladlqhdngktkdnflskfkakstp
 
 springdoc:
   api-docs:
