@@ -166,5 +166,91 @@ class BookControllerTest {
                         .header("Authorization", "Bearer " + jwtResponse.accessToken()))
                 .andExpect(status().isNoContent());
     }
+    
+    @Test
+    @DisplayName("내 책 목록 조회 실패 - 인증 없음")
+    void getMyBookTest_Failure_NoAuth() throws Exception {
+        mockMvc.perform(get("/books/my"))
+                .andExpect(status().isUnauthorized());
+    }
+    
+    @Test
+    @DisplayName("책 단건 조회 실패 - 존재하지 않는 책 ID")
+    @Sql("/insert-data.sql")
+    void getBookTest_Failure_NotFound() throws Exception {
+        LoginRequest loginRequest = new LoginRequest("user1@rebook.com", "qwer1234!!");
+        String loginResult = mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        JwtResponse jwtResponse = objectMapper.readValue(loginResult, JwtResponse.class);
+        
+        mockMvc.perform(get("/books/999999")
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken()))
+                .andExpect(status().isNotFound());
+    }
+    
+    @Test
+    @DisplayName("책 생성 실패 - 인증 없음")
+    void createBookTest_Failure_NoAuth() throws Exception {
+        CreateBookReq request = new CreateBookReq("새로운 책", "새로운 저자");
+        
+        mockMvc.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized());
+    }
+    
+    @Test
+    @DisplayName("책 수정 실패 - 관리자가 아닌 사용자")
+    @Sql("/insert-data.sql")
+    void updateBookTest_Failure_NotAdmin() throws Exception {
+        LoginRequest loginRequest = new LoginRequest("user1@rebook.com", "qwer1234!!");
+        String loginResult = mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        JwtResponse jwtResponse = objectMapper.readValue(loginResult, JwtResponse.class);
+        
+        UpdateBookReq request = new UpdateBookReq("클린 코드 (개정판)", "로버트 C. 마틴");
+        
+        BookEntity book = bookRepository.findAll().stream()
+                .filter(b -> b.getTitle().equals("클린 코드"))
+                .findFirst()
+                .orElseThrow();
+        
+        mockMvc.perform(put("/books/" + book.getId())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isForbidden());
+    }
+    
+    @Test
+    @DisplayName("책 삭제 실패 - 관리자가 아닌 사용자")
+    @Sql("/insert-data.sql")
+    void deleteBookTest_Failure_NotAdmin() throws Exception {
+        LoginRequest loginRequest = new LoginRequest("user1@rebook.com", "qwer1234!!");
+        String loginResult = mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        JwtResponse jwtResponse = objectMapper.readValue(loginResult, JwtResponse.class);
+        
+        BookEntity book = bookRepository.findAll().stream()
+                .filter(b -> b.getTitle().equals("클린 코드"))
+                .findFirst()
+                .orElseThrow();
+        
+        mockMvc.perform(delete("/books/" + book.getId())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken()))
+                .andExpect(status().isForbidden());
+    }
 }
 
