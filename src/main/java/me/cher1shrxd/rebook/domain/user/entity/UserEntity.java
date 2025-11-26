@@ -1,11 +1,16 @@
 package me.cher1shrxd.rebook.domain.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import me.cher1shrxd.rebook.domain.book.entity.BookEntity;
+import me.cher1shrxd.rebook.domain.review.entity.ReviewEntity;
 import me.cher1shrxd.rebook.domain.user.enums.UserRole;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -32,4 +37,12 @@ public class UserEntity {
 
     @Column(nullable = false)
     private UserRole role;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<ReviewEntity> reviews;
+
+    @OneToMany(mappedBy = "addedBy", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<BookEntity> books;
 }

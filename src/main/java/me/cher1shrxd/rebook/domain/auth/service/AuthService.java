@@ -65,6 +65,8 @@ public class AuthService {
     }
 
     public JwtResponse reissue(ReissueRequest reissueRequest) {
+        System.out.println("reissue called");
+
         String refreshToken = reissueRequest.refreshToken();
 
         if (jwtProvider.getType(refreshToken) != JwtType.REFRESH)

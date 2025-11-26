@@ -12,6 +12,7 @@ import me.cher1shrxd.rebook.domain.user.entity.UserEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Table(name = "reviews")
 public class ReviewEntity extends BaseTimeEntity{
 
     @Id
@@ -29,11 +30,11 @@ public class ReviewEntity extends BaseTimeEntity{
     Long rating;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id", nullable = false)
+    @JoinColumn(name = "book_id")
     private BookEntity book;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
     @Builder
