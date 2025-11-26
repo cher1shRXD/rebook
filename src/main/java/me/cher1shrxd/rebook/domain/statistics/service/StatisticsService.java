@@ -34,7 +34,7 @@ public class StatisticsService {
         List<Object[]> result = statisticsRepository.findBooksOrderByAverageRating();
         List<BookResponse> books = result.stream()
                 .limit(5)
-                .map(row -> (Long) row[0])   // bookId
+                .map(row -> (Long) row[0])
                 .map(bookRepository::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
